@@ -65,4 +65,9 @@ public class ImageIterator implements Iterator {
         }
         return null;
     }
+
+    @Override
+    public void reset() {
+
+    }
 }

@@ -3,32 +3,28 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.Pane?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.task__5.HelloController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
     <Label text="Indicator Example"/>
-    <TextField fx:id="startField" text="10"/>
-    <TextField fx:id="stopField" text="30"/>
-    <TextField fx:id="measureField" text="20"/>
-    <TextField fx:id="titleField" text="таотуамтукм"/>
+    <HBox spacing="10.0" alignment="CENTER">
+        <Label text="Start:"/>
+        <Label fx:id="startField" text="1"/>
+        <Label text="Stop:"/>
+        <Label fx:id="stopField" text="0"/>
+        <Label text="Measure:"/>
+        <Label fx:id="measureField" text="0"/>
+    </HBox>
 
-    <Pane fx:id="indicatorPane" xmlns:fx="http://javafx.com/fxml" />
+    <Pane fx:id="indicatorPane" xmlns:fx="http://javafx.com/fxml" visible="false" />
 
-    <Button text="Create Indicator" onAction="#createIndicator"/>
     <ImageView fx:id="screen" fitWidth="400" fitHeight="400" preserveRatio="true"/>
 
     <HBox spacing="10.0" alignment="CENTER">
@@ -36,9 +32,6 @@
         <Button fx:id="startStopButton" text="⏯" onAction="#toggleAnimation"/>
         <Button text="--▶" onAction="#next"/>
     </HBox>
-
-    <TextField fx:id="delayField" promptText="задержка в миллисекундах" />
-    <Button text="Задать задержку " onAction="#updateDelay"/>
 
     <Button fx:id="chooseFolderButton" onAction="#chooseFolder" text="Выбрать папку" />
 </VBox>

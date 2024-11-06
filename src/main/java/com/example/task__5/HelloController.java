@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,13 +19,10 @@ import java.io.File;
 
 public class HelloController {
 
-    // Поля для управления индикаторами
     @FXML
     private Pane indicatorPane;
     @FXML
-    private TextField startField, stopField, measureField, titleField;
-
-    // Поля для управления анимацией изображений
+    private Label startField, stopField, measureField;
     @FXML
     private Button startStopButton;
     @FXML
@@ -38,40 +36,18 @@ public class HelloController {
     private Iterator iter;
     private Timeline time = new Timeline();
     private boolean isPlaying = false;
+    private int currentImageIndex = 0;
 
     public void initialize() {
-        // Инициализация для анимации изображений
         aggregate = new ConcreteAggregate("src/main/resources/img");
         iter = aggregate.getIterator();
         time.setCycleCount(Timeline.INDEFINITE);
         updateTimeline(1000);
         screen.setPreserveRatio(false);
-    }
 
-    // Метод для создания индикаторов
-    @FXML
-    public void createIndicator() {
-        float start = Float.parseFloat(startField.getText());
-        float stop = Float.parseFloat(stopField.getText());
-        float measure = Float.parseFloat(measureField.getText());
-        String title = titleField.getText();
-
-        if (measure < start || measure > stop) {
-            showAlert("Ошибка", "Введенное значение не входит в диапазон между " + start + " и " + stop);
-            return;
-        }
-
-        indicatorPane.getChildren().clear();
-
-        Builder builder = new ConcreteBuilder();
-
-        builder.lineBounds(start, stop);
-        builder.linePaint(measure);
-        builder.lineMark(String.format("%.1f", measure));
-        builder.addTitle(title);
-
-        Indicator indicator = builder.build();
-        indicator.show(indicatorPane);
+        startField.setText("1");
+        updateStopField();
+        updateMeasureField();
     }
 
     // Метод для показа ошибок
@@ -90,6 +66,16 @@ public class HelloController {
             Image image = (Image) iter.next();
             if (image != null) {
                 screen.setImage(image);
+                currentImageIndex++;
+                updateMeasureField();
+            } else {
+                iter.reset();
+                currentImageIndex = 0;
+                updateMeasureField();
+                image = (Image) iter.next();
+                if (image != null) {
+                    screen.setImage(image);
+                }
             }
         }
     }
@@ -97,12 +83,29 @@ public class HelloController {
     // Метод для переключения анимации
     @FXML
     public void toggleAnimation() {
+        float start = Float.parseFloat(startField.getText());
+        float stop = Float.parseFloat(stopField.getText());
+        float measure = Float.parseFloat(measureField.getText());
+
+        indicatorPane.getChildren().clear();
+
+        Builder builder = new ConcreteBuilder();
+
+        builder.lineBounds(start, stop);
+        builder.linePaint(measure);
+        builder.lineMark(String.format("%.1f", measure));
+
+        Indicator indicator = builder.build();
+        indicator.show(indicatorPane);
+
         if (isPlaying) {
             time.pause();
             startStopButton.setText("⏹");
+            indicatorPane.setVisible(false);
         } else {
             startStopButton.setText("▶");
             time.play();
+            indicatorPane.setVisible(true);
         }
         isPlaying = !isPlaying;
     }
@@ -110,8 +113,10 @@ public class HelloController {
     // Метод для обновления временной шкалы с новой задержкой
     @FXML
     public void updateDelay() {
-        int newDelay = Integer.parseInt(delayField.getText());
-        updateTimeline(newDelay);
+        if (delayField != null) {
+            int newDelay = Integer.parseInt(delayField.getText());
+            updateTimeline(newDelay);
+        }
     }
 
     // Метод для обновления временной шкалы
@@ -120,7 +125,7 @@ public class HelloController {
         time.getKeyFrames().clear();
         time.getKeyFrames().add(new KeyFrame(Duration.millis(delayMillis), new EvHandler()));
         if (isPlaying) {
-            time.play(); // возобновляем
+            time.play();
         }
     }
 
@@ -130,6 +135,16 @@ public class HelloController {
         Image image = (Image) iter.next();
         if (image != null) {
             screen.setImage(image);
+            currentImageIndex++;
+            updateMeasureField();
+        } else {
+            iter.reset();
+            currentImageIndex = 0;
+            updateMeasureField();
+            image = (Image) iter.next();
+            if (image != null) {
+                screen.setImage(image);
+            }
         }
     }
 
@@ -139,6 +154,8 @@ public class HelloController {
         Image image = (Image) iter.preview();
         if (image != null) {
             screen.setImage(image);
+            currentImageIndex--;
+            updateMeasureField();
         }
     }
 
@@ -151,10 +168,38 @@ public class HelloController {
         if (selectedDirectory != null) {
             aggregate = new ConcreteAggregate(selectedDirectory.getAbsolutePath());
             iter = aggregate.getIterator();
+            currentImageIndex = 0;
+            updateStopField();
+            updateMeasureField();
             Image image = (Image) iter.next();
             if (image != null) {
                 screen.setImage(image);
             }
         }
+    }
+
+    // Метод для обновления значения stopField
+    private void updateStopField() {
+        int imageCount = aggregate.getImageCount();
+        stopField.setText(String.valueOf(imageCount));
+    }
+
+    // Метод для обновления значения measureField и перемещения флажка
+    private void updateMeasureField() {
+        measureField.setText(String.valueOf(currentImageIndex + 1));
+        float measure = Float.parseFloat(measureField.getText());
+        float start = Float.parseFloat(startField.getText());
+        float stop = Float.parseFloat(stopField.getText());
+
+        indicatorPane.getChildren().clear();
+
+        Builder builder = new ConcreteBuilder();
+
+        builder.lineBounds(start, stop);
+        builder.linePaint(measure);
+        builder.lineMark(String.format("%.1f", measure));
+
+        Indicator indicator = builder.build();
+        indicator.show(indicatorPane);
     }
 }
