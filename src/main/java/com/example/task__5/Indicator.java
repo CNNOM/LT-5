@@ -14,8 +14,6 @@ public class Indicator {
     }
 
     public void setLenght(int n) {}
-
     public void setPaint(char norm) {}
-
     public void setMetka(char select) {}
 }

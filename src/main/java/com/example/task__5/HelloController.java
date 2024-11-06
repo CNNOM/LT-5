@@ -37,6 +37,7 @@ public class HelloController {
     private Timeline time = new Timeline();
     private boolean isPlaying = false;
     private int currentImageIndex = 0;
+    private Director director = new Director();
 
     public void initialize() {
         aggregate = new ConcreteAggregate("src/main/resources/img");
@@ -48,15 +49,6 @@ public class HelloController {
         startField.setText("1");
         updateStopField();
         updateMeasureField();
-    }
-
-    // Метод для показа ошибок
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     // Обработчик события для показа кадров
@@ -90,10 +82,7 @@ public class HelloController {
         indicatorPane.getChildren().clear();
 
         Builder builder = new ConcreteBuilder();
-
-        builder.lineBounds(start, stop);
-        builder.linePaint(measure);
-        builder.lineMark(String.format("%.1f", measure));
+        director.constructIndicator(builder, start, stop, measure);
 
         Indicator indicator = builder.build();
         indicator.show(indicatorPane);
@@ -194,10 +183,7 @@ public class HelloController {
         indicatorPane.getChildren().clear();
 
         Builder builder = new ConcreteBuilder();
-
-        builder.lineBounds(start, stop);
-        builder.linePaint(measure);
-        builder.lineMark(String.format("%.1f", measure));
+        director.constructIndicator(builder, start, stop, measure);
 
         Indicator indicator = builder.build();
         indicator.show(indicatorPane);
