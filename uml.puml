@@ -1,0 +1,117 @@
+@startuml
+class com.example.task__5.HelloController {
+- Pane indicatorPane
+- Label startField
+- TextField titleField
+- Button startStopButton
+- ImageView screen
+- TextField delayField
+- Button chooseFolderButton
+- Aggregate aggregate
+- Iterator iter
+- Timeline time
+- boolean isPlaying
+- int currentImageIndex
+- Director director
++ void initialize()
+- void showAlert(String,String)
++ void toggleAnimation()
++ void updateDelay()
+- void updateTimeline(int)
++ void next()
++ void preview()
++ void chooseFolder()
+- void updateStopField()
+- void updateMeasureField()
+}
+
+interface com.example.task__5.Builder {
+~ void setView(int,char,char)
+~ void lineBounds(float,float)
+~ void linePaint(float)
+~ void lineMark(String)
+~ void addTitle(String)
+~ Indicator build()
+}
+
+interface com.example.task__5.Iterator {
+~ boolean hasNext()
+~ Object next()
+~ Object preview()
+~ void reset()
+}
+
+class com.example.task__5.Indicator {
+- Pane panel
++ void add(Pane)
++ void show(Pane)
++ void setLenght(int)
++ void setPaint(char)
++ void setMetka(char)
+}
+
+class com.example.task__5.ConcreteBuilder {
+~ Indicator indicator
+- float start
++ void setView(int,char,char)
++ void lineBounds(float,float)
++ void linePaint(float)
++ void lineMark(String)
++ void addTitle(String)
++ Indicator build()
+}
+
+class com.example.task__5.ConcreteIterator {
+- List<Image> images
+- int currentIndex
++ boolean hasNext()
++ Object next()
++ Object preview()
++ void reset()
+}
+
+
+class com.example.task__5.ConcreteAggregate {
+- List<Image> images
+- void loadImages(String)
+- boolean isImageFile(File)
++ Iterator getIterator()
++ int getImageCount()
+}
+
+interface com.example.task__5.Aggregate {
+~ Iterator getIterator()
+~ int getImageCount()
+}
+
+class com.example.task__5.Director {
++ void constructIndicator(Builder,float,float,float,String)
+}
+
+class com.example.task__5.ImageIterator {
+- int current
+- String basePath
+- List<File> imageFiles
++ void setBasePath(String)
+- void loadImageFiles()
+- Image getImage(int)
++ boolean hasNext()
++ Object next()
++ Object preview()
++ void reset()
+}
+
+
+com.example.task__5.Builder <|.. com.example.task__5.ConcreteBuilder
+com.example.task__5.Iterator <|.. com.example.task__5.ConcreteIterator
+com.example.task__5.Aggregate <|.. com.example.task__5.ConcreteAggregate
+com.example.task__5.Iterator <|.. com.example.task__5.ImageIterator
+
+com.example.task__5.HelloController --> com.example.task__5.Director
+com.example.task__5.Director --> com.example.task__5.Builder
+com.example.task__5.ConcreteBuilder --> com.example.task__5.Indicator
+com.example.task__5.HelloController --> com.example.task__5.Aggregate
+com.example.task__5.HelloController --> com.example.task__5.Iterator
+com.example.task__5.ConcreteAggregate --> com.example.task__5.Iterator
+
+@enduml
